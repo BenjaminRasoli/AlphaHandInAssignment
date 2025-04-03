@@ -30,7 +30,7 @@ public class ProjectEntity
     public virtual UserEntity User{ get; set; } = null!;
 
     [ForeignKey(nameof(Status))]
-    public string StatusId { get; set; } = null!;
+    public int StatusId { get; set; }
     public virtual StatusEntity Status{ get; set; } = null!;
 
 }
