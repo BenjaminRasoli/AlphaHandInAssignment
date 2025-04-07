@@ -1,0 +1,57 @@
+﻿@model EditProjectViewModel
+
+<div id="editProjectModal" class="modal">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add Project</h3>
+            <button type="button" class="btn-close" data-type="close" data-close="true" data-target="#editProjectModal"></button>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Project" asp-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+                <div class="form-group">
+                    <label asp-for="ProjectName"></label>
+                    <input asp-for="ProjectName" />
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <div class="wysiwyg-container">
+                        <textarea id="edit-project-description" asp-for="Description"></textarea>
+                        <div id="edit-project-description-editor" class="wysiwyg-editor"></div>
+                        <div id="edit-project-description-toolbar" class="wysiwyg-toolbar">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-align" value=""></button>
+                                <button class="ql-align" value="center"></button>
+                                <button class="ql-align" value="right"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-list" value="ordered"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-submit">Save</button>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer"></div>
+    </div>
+</div>
+
+<script>
+    initWysiwygEditor('#edit-project-description-editor', '#edit-project-description-toolbar','#edit-project-description', '@Html.Raw(Model?.Description ?? "")')
+</script>

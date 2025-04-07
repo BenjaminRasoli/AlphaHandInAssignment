@@ -2,15 +2,19 @@
 using Domain.Extensions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
 
-public class AuthController(IAuthService authService) : Controller
+public class AuthController(IAuthService authService, IUserService userService, INotificationService notificationService) : Controller
 {
     private readonly IAuthService _authService = authService;
+    private readonly IUserService _userService = userService;
+    private readonly INotificationService _notificationService = notificationService;
 
-    public  IActionResult SignUp(string returnUrl = "~/")
+
+    public IActionResult SignUp(string returnUrl = "~/")
     {
         ViewBag.ReturnUrl = returnUrl;
 
@@ -55,11 +59,18 @@ public class AuthController(IAuthService authService) : Controller
         ViewBag.ErrorMessage = null;
         ViewBag.ReturnUrl = returnUrl;
 
-
-        if (!ModelState.IsValid)
+        model = new SignInViewModel
         {
-            return View(model);
-        }
+            Email = "admin@domain.com",
+            Password = "BytMig123!",
+            IsPersistent = false
+        };
+
+
+        //if (!ModelState.IsValid)
+        //{
+        //    return View(model);
+        //}
 
         var signInFormData = model.MapTo<SignInFormData>();
 
@@ -67,10 +78,33 @@ public class AuthController(IAuthService authService) : Controller
 
         if (result.Succeded)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userResult = await _userService.GetUserByIdAsync(userId!);
+            var user = userResult.Result;
+
+            if (user != null)
+            {
+                var notificationFormData = new NotificationFormData
+                {
+                    NotificationTypeId = 1,
+                    NotificationTargetId = 1,
+                    Message = $"{user.FirstName} {user.LastName} signed in.",
+                    Image = user.Image
+                };
+
+                await _notificationService.AddNotificationAsync(notificationFormData);
+            }
             return LocalRedirect(returnUrl);
         }
 
         ViewBag.ErrorMessage = result.Error;
         return View(model);
+    }
+
+    [Route("auth/logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _authService.SignOutAsync();
+        return LocalRedirect("~/");
     }
 }

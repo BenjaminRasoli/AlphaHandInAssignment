@@ -1,0 +1,64 @@
+﻿@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+    var roleName = User.FindFirstValue(ClaimTypes.Role) ?? "";
+    var notificationResult = await notificationService.GetNotificationsAsync(userId, roleName);
+
+    var notifications = notificationResult.Result;
+
+    if (roleName != "Admin")
+    {
+        notifications = notifications!.Where(n => n.Message.Contains("login")).ToList(); 
+    }
+}
+
+<div class="notification-dropdown-container">
+    <button id="notification-dropdown-button" data-type="dropdown" data-target="#notification-dropdown" class="btn-notification fa-duotone fa-solid fa-bell" style="--fa-primary-opacity: 0.4; --fa-secondary-opacity: 1;">
+        @if (notifications!.Any())
+        {
+            <div class="dot dot-red"></div>
+        }
+    </button>
+
+    <div id="notification-dropdown" class="notification-dropdown">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <span class="notification-number">@notifications!.Count()</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="notifications">
+
+            @foreach (var notification in notifications!)
+            {
+                <div class="notification-item" data-id="@notification.Id">
+                    <img class="image" src="@notification.Image" />
+                    <div class="message">@notification.Message</div>
+                    <div class="time" data-created="@notification.CreateDate.ToString("s")">@notification.CreateDate</div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateNotificationCount() {
+        const notifications = document.querySelector('.notifications')
+        const notificationNumber = document.querySelector('.notification-number')
+        const notificationDropdownButton = document.getElementById('notification-dropdown-button')
+        const count = notifications.querySelectorAll('.notification-item').length
+
+        if (notificationNumber) {
+            notificationNumber.textContent = count
+        }
+
+        let dot = notificationDropdownButton.querySelector('.dot.dot-red');
+        if (count > 0 && !dot) {
+            dot = document.createElement('div');
+            dot.className = 'dot dot-red';
+            notificationButton.appendChild(dot);
+        }
+        if (count === 0 && dot) {
+            dot.remove();
+        }
+    }
+</script>

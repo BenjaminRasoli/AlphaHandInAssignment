@@ -1,9 +1,11 @@
-﻿using System.Reflection;
-
+﻿using Domain.Models;
+using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Domain.Extensions;
 
 public static class MappingExtensions
 {
+
     public static TDestination MapTo<TDestination>(this object source)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));

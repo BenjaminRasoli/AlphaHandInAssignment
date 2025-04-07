@@ -12,10 +12,12 @@ public interface IAuthService
     Task<AuthResult> SignUpAsync(SignUpFormData formData);
 }
 
-public class AuthService(IUserService userService, SignInManager<UserEntity> signInManager) : IAuthService
+public class AuthService(IUserService userService, SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) : IAuthService
 {
     private readonly IUserService _userService = userService;
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
+    private readonly UserManager<UserEntity> _userManager = userManager;
+
 
     public async Task<AuthResult> SignInAsync(SignInFormData formData)
     {
@@ -28,10 +30,20 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
                 Error = "Form data is null"
             };
         }
+        var user = await _userManager.FindByEmailAsync(formData.Email);
+        if (user == null)
+        {
+            return new AuthResult
+            {
+                Succeded = false,
+                StatusCode = 401,
+                Error = "Invlaid email or paswrod"
+            };
+        }
 
-        var result = await _signInManager.PasswordSignInAsync(formData.Email, formData.Password, formData.IsPersistent, false);
+        var signInResult = await _signInManager.PasswordSignInAsync(user, formData.Password, formData.IsPersistent, false);
 
-        if (result.Succeeded)
+        if (signInResult.Succeeded)
         {
             return new AuthResult
             {

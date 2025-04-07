@@ -15,10 +15,11 @@ public interface IProjectService
     Task<ProjectResult<IEnumerable<Project>>> GetProjectsAsync();
 }
 
-public class ProjectService(IProjectRepository projectRepository, IStatusService statusService) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IStatusService statusService, IClientService clientService) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
     private readonly IStatusService _statusService = statusService;
+    private readonly IClientService _clientService = clientService;
 
     public async Task<ProjectResult> CreateProjectAsync(AddProjectFormData formData)
     {
@@ -31,11 +32,18 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
                 Error = "Not all required fields are filled"
             };
         }
-        var projectEntity = formData.MapTo<ProjectEntity>();
-        var statusResult = await _statusService.GetStatusByIdAsync(1);
-        var status = statusResult.Result;
 
-        projectEntity.StatusId = status!.Id;
+        var projectEntity = formData.MapTo<ProjectEntity>();
+
+        var statusResult = await _statusService.GetStatusByIdAsync(3);
+        projectEntity.StatusId = 3;
+        projectEntity.Status = statusResult!.Result!.MapTo<StatusEntity>();
+
+        var clientResult = await _clientService.GetClientByIdAsync(formData.ClientId);
+        projectEntity.ClientId = formData.ClientId;
+        projectEntity.Client = clientResult.Result.MapTo<ClientEntity>();
+
+        projectEntity.Image = "s";
 
         var result = await _projectRepository.AddAsync(projectEntity);
 
@@ -56,33 +64,38 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
                 Error = result.Error
             };
         }
-
-
     }
 
     public async Task<ProjectResult<IEnumerable<Project>>> GetProjectsAsync()
     {
-        var response = await _projectRepository.GetAllAsync
-            (orderByDescending: true, sortBy: s => s.Created, where: null,
-                include => include.User,
-                include => include.Status,
-                include => include.Client
-            );
+        var result = await _projectRepository.GetAllAsync<Project>(
+            selector: null,
+            orderByDescending: true,
+            sortByColumn: s => s.Created,
+            filterBy: null,
+            sortBy: null,
+            where: null,
+            take: 0,
+            //include => include.User,
+            include => include.Status,
+            include => include.Client
+        );
 
         return new ProjectResult<IEnumerable<Project>>
         {
             Succeded = true,
             StatusCode = 200,
-            Result = response.Result
+            Result = result.Result
         };
     }
+
 
     public async Task<ProjectResult<Project>> GetProjectAsync(string id)
     {
         var response = await _projectRepository.GetAsync
             (
                 where: x => x.Id == id,
-                include => include.User,
+                //include => include.User,
                 include => include.Status,
                 include => include.Client
             );

@@ -1,0 +1,84 @@
+﻿@model AddProjectViewModel;
+
+<div id="addProjectModal" class="modal">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add Project</h3>
+            <button type="button" class="btn-close" data-type="close" data-close="true" data-target="#addProjectModal"></button>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Projects" asp-action="Add" method="post" enctype="multipart/form-data" novalidate>
+
+                <div class="form-group">
+                    <label asp-for="Image"></label>
+                    <input asp-for="Image" />
+                </div>
+                
+                
+                <div class="form-group">
+                    <label asp-for="ProjectName"></label>
+                    <input asp-for="ProjectName" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ClientId"></label>
+                    <select asp-for="ClientId" asp-items="Model.Clients"></select>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <div class="wysiwyg-container">
+                        <textarea id="add-project-description" asp-for="Description"></textarea>
+                        <div id="add-project-description-editor" class="wysiwyg-editor"></div>
+                        <div id="add-project-description-toolbar" class="wysiwyg-toolbar">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-align" value=""></button>
+                                <button class="ql-align" value="center"></button>
+                                <button class="ql-align" value="right"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-list" value="ordered"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="StartDate"></label>
+                    <input asp-for="StartDate" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndDate"></label>
+                    <input asp-for="EndDate" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Budget"></label>
+                    <input asp-for="Budget" />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-submit">Add Project</button>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer"></div>
+    </div>
+</div>
+
+<script>
+    initWysiwygEditor('#add-project-description-editor', '#add-project-description-toolbar','#add-project-description', '@Html.Raw(Model?.Description ?? "")')
+</script>

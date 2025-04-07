@@ -34,6 +34,4 @@ public class SignUpViewModel
     [Display(Name = "Confirm Password", Prompt = "Confirm password")]
     public string ConfirmPassword { get; set; } = null!;
 
-    [Range(typeof(bool), "true", "true", ErrorMessage = "Must be accepted")]
-    public bool TermsAndConditions { get; set; }
 }

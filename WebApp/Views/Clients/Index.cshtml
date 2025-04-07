@@ -1,0 +1,42 @@
+﻿@model WebApp.Models.ClientsViewModel
+
+@{
+    ViewData["Title"] = "Clients";
+}
+
+<section id="clients">
+    <div class="section-header">
+        <h1>@ViewData["Title"]</h1>
+        <button type="button" data-type="modal" data-target="#addClientModal" class="btn btn-add">
+            <span>Add Client</span>
+        </button>
+    </div>
+
+    <!-- Table Structure for Clients -->
+    <table class="clients-table">
+        <thead>
+            <tr>
+                <th>Client Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in Model.Clients)
+            {
+                <tr>
+                    <td>@client.ClientName</td>
+                    <td>@client.Email</td>
+                    <td>@client.PhoneNumber</td>
+                    <td>
+                        <button class="btn btn-edit">Edit</button>
+                        <button class="btn btn-delete">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <partial name="Partials/Client/_AddClientModal" model="Model.AddClientViewModel" />
+</section>

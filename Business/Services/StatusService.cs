@@ -1,4 +1,6 @@
 ﻿using Business.Models;
+using Data.Entities;
+using Data.Models;
 using Data.Repositories;
 using Domain.Extensions;
 using Domain.Models;
@@ -18,14 +20,39 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
 
     public async Task<StatusResult<IEnumerable<Status>>> GetStatusesAsync()
     {
-        var result = await _statusRepository.GetAllAsync();
+        //var result = await _statusRepository.GetAllAsync<Status>
+        // (
+        //        orderByDescending: false,
+        //        sortByColumn: x => x.Id
+        //);
+
+        var result = await _statusRepository.GetAllAsync(
+    selector: entity => new Status
+    {
+        Id = entity.Id.ToString(),
+        StatusName = entity.StatusName
+    },
+    orderByDescending: false,
+    sortByColumn: x => x.Id
+);
+
+
+        var entities = result.Result;
+        //var statuses = entities?.Select(entity => entity.MapTo<Status>()) ?? [];
+
+        var statuses = entities?.Select(entity => new Status
+        {
+            Id = entity.Id.ToString(), 
+            StatusName = entity.StatusName
+        }) ?? [];
+
         if (result.Succeded)
         {
             return new StatusResult<IEnumerable<Status>>
             {
                 Succeded = true,
                 StatusCode = 200,
-                Result = result.Result
+                Result = statuses
             };
         }
         else
@@ -65,13 +92,27 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
     public async Task<StatusResult<Status>> GetStatusByIdAsync(int id)
     {
         var result = await _statusRepository.GetAsync(x => x.Id == id);
+        var entity = result.Result;
+
+        if (entity == null)
+        {
+            return new StatusResult<Status>
+            {
+                Succeded = false,
+                StatusCode = 404,
+                Error = "Status not found"
+            };
+        }
+
+        var status = entity.MapTo<Status>();
+
         if (result.Succeded)
         {
             return new StatusResult<Status>
             {
                 Succeded = true,
                 StatusCode = 200,
-                Result = result.Result
+                Result = status
             };
         }
         else
@@ -84,4 +125,5 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
             };
         }
     }
+
 }

@@ -13,6 +13,8 @@ public interface IUserService
 {
     Task<UserResult> AddUserToRole(string userId, string roleName);
     Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User");
+    Task<string> GetDisplayName(string userId);
+    Task<UserResult> GetUserByIdAsync(string id);
     Task<UserResult> GetUsersAsync();
 }
 
@@ -24,7 +26,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
     public async Task<UserResult> GetUsersAsync()
     {
-        var result = await _userRepository.GetAllAsync();
+        var result = await _userRepository.GetAllAsync<UserEntity>();
         return result.MapTo<UserResult>();
     }
 
@@ -71,6 +73,28 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
         }
     }
 
+    public async Task<UserResult> GetUserByIdAsync(string id)
+    {
+        var repositoryResult = await _userRepository.GetAsync(x => x.Id == id);
+
+        var entity = repositoryResult.Result;
+        if (entity == null)
+            return new UserResult 
+            { 
+                Succeded = false,
+                StatusCode = 404,
+                Error = "User not found"
+            };
+
+        var user = entity.MapTo<User>();
+        return new UserResult
+        { 
+            Succeded = true,
+            StatusCode = 200,
+            Result = user
+        };
+    }
+
     public async Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User")
     {
         if (formData == null)
@@ -97,11 +121,21 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
         try
         {
             var userEntity = formData.MapTo<UserEntity>();
+            userEntity.UserName = formData.FirstName + formData.LastName;
+
             var result = await _userManager.CreateAsync(userEntity, formData.Password);
 
             if (result.Succeeded)
             {
-                var addToRoleResult = await AddUserToRole(userEntity.Id, roleName);
+                var users = await _userRepository.GetAllAsync<UserEntity>();
+                if (users?.Result?.Count() == 1)  
+                {
+                    var addToRoleResult = await AddUserToRole(userEntity.Id, "Admin");
+                }
+                else
+                {
+                    var addToRoleResult = await AddUserToRole(userEntity.Id, roleName);
+                }
 
                 if (result.Succeeded)
                 {
@@ -141,5 +175,13 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
                 Error = ex.Message
             };
         }
+    }
+    public async Task<string> GetDisplayName(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+            return "";
+
+        var user = await _userManager.FindByIdAsync(userId);
+        return user == null ? "" : $"{user.FirstName} {user.LastName}";
     }
 }

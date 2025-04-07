@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Models;
+﻿namespace Domain.Models;
 
 public class Client
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
     public string ClientName { get; set; } = null!;
+    public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
 }
 

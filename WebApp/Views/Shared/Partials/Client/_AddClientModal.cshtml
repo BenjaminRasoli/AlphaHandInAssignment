@@ -1,0 +1,45 @@
+﻿@model AddClientViewModel
+
+<div id="addClientModal" class="modal">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add Client</h3>
+            <button type="button" class="btn-close" data-type="close" data-close="true" data-target="#addClientModal"></button>
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+            {
+                <div class="alert-notification error">
+                    @ViewBag?.ErrorMessage
+                </div>
+            }
+
+            <form asp-controller="Clients" asp-action="Add" method="post" enctype="multipart/form-data" novalidate>
+                <input type="hidden" name="returnUrl" value="@ViewBag?.ReturnUrl" />
+
+                <div class="form-group">
+                    <label asp-for="ClientName"></label>
+                    <input asp-for="ClientName" value="@Model?.ClientName" />
+                    <span asp-validation-for="ClientName" class="text-danger"></span>  
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ClientEmail"></label>
+                    <input asp-for="ClientEmail" value="@Model?.ClientEmail" />
+                    <span asp-validation-for="ClientEmail" class="text-danger"></span> 
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ClientPhoneNumber"></label>
+                    <input asp-for="ClientPhoneNumber" value="@Model?.ClientPhoneNumber" />
+                    <span asp-validation-for="ClientPhoneNumber" class="text-danger"></span> 
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-submit">Add Client</button>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer"></div>
+    </div>
+</div>
