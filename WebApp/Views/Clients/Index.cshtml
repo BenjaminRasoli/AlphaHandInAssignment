@@ -12,7 +12,6 @@
         </button>
     </div>
 
-    <!-- Table Structure for Clients -->
     <table class="clients-table">
         <thead>
             <tr>
@@ -30,8 +29,9 @@
                     <td>@client.Email</td>
                     <td>@client.PhoneNumber</td>
                     <td>
+
                         <button class="btn btn-edit">Edit</button>
-                        <button class="btn btn-delete">Delete</button>
+                        <a asp-controller="Clients" asp-action="Delete" asp-route-id="@client.Id" class="btn btn-edit">Delete</a>
                     </td>
                 </tr>
             }

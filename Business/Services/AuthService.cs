@@ -9,7 +9,7 @@ public interface IAuthService
 {
     Task<AuthResult> SignInAsync(SignInFormData formData);
     Task<AuthResult> SignOutAsync();
-    Task<AuthResult> SignUpAsync(SignUpFormData formData);
+    Task<AuthResult> SignUpAsync(SignUpFormData formData, string role);
 }
 
 public class AuthService(IUserService userService, SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) : IAuthService
@@ -62,7 +62,7 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
         }
     }
 
-    public async Task<AuthResult> SignUpAsync(SignUpFormData formData)
+    public async Task<AuthResult> SignUpAsync(SignUpFormData formData, string role)
     {
         if (formData == null)
         {
@@ -74,7 +74,7 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
             };
         }
 
-        var result = await _userService.CreateUserAsync(formData);
+        var result = await _userService.CreateUserAsync(formData, role);
 
         if (result.Succeded)
         {

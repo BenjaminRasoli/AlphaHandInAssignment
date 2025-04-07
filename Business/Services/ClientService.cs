@@ -9,6 +9,7 @@ namespace Business.Services;
 public interface IClientService
 {
     Task<ClientResult<Client>> CreateClientAsync(AddClientFormData form);
+    Task<ClientResult<IEnumerable<Client>>> DeleteClientAsync(ClientEntity entity);
     Task<ClientResult<Client>> GetClientByIdAsync(string id);
     Task<ClientResult<IEnumerable<Client>>> GetClientsAsync();
 }
@@ -28,6 +29,26 @@ public class ClientService(IClientRepository clientRepository) : IClientService
                 Succeded = result.Succeded,
                 StatusCode = result.StatusCode,
                 Result = clients
+            };
+        }
+
+        return new ClientResult<IEnumerable<Client>>
+        {
+            Succeded = result.Succeded,
+            StatusCode = result.StatusCode,
+            Result = []
+        };
+    }
+
+    public async Task<ClientResult<IEnumerable<Client>>> DeleteClientAsync(ClientEntity entity)
+    {
+        var result = await _clientRepository.DeleteAsync(entity);
+        if (result.Succeded)
+        {
+            return new ClientResult<IEnumerable<Client>>
+            {
+                Succeded = result.Succeded,
+                StatusCode = result.StatusCode,
             };
         }
 

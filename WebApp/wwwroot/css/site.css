@@ -898,6 +898,10 @@ form {
     width: 550px;
 }
 
+#addMemberModal .card {
+    width: 550px;
+}
+
 /* ============================= */
 /*   Dark Mode-toggle (exempel)  */
 /* ============================= */

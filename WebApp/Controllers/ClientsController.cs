@@ -1,5 +1,7 @@
 ﻿using Business.Models;
 using Business.Services;
+using Data.Entities;
+using Domain.Extensions;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,5 +80,22 @@ public class ClientsController(IClientService clientService, INotificationServic
         return View(model);
     }
 
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var clientResult = await _clientService.GetClientByIdAsync(id);
+        if (clientResult.Succeded)
+        {
+            var client = clientResult.Result!.MapTo<ClientEntity>();
+
+            var result = await _clientService.DeleteClientAsync(client);
+            if (result.Succeded)
+            {
+                return Ok();
+            }
+        }
+        return BadRequest();
+    }
 
 }

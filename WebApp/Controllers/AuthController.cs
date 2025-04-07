@@ -34,8 +34,8 @@ public class AuthController(IAuthService authService, IUserService userService, 
         }
 
         var signUpFormData = model.MapTo<SignUpFormData>();
-
-        var result = await _authService.SignUpAsync(signUpFormData);
+        var role = "User";
+        var result = await _authService.SignUpAsync(signUpFormData, role);
 
         if (result.Succeded)
         {
@@ -59,18 +59,18 @@ public class AuthController(IAuthService authService, IUserService userService, 
         ViewBag.ErrorMessage = null;
         ViewBag.ReturnUrl = returnUrl;
 
-        model = new SignInViewModel
-        {
-            Email = "admin@domain.com",
-            Password = "BytMig123!",
-            IsPersistent = false
-        };
-
-
-        //if (!ModelState.IsValid)
+        //model = new SignInViewModel
         //{
-        //    return View(model);
-        //}
+        //    Email = "admin@domain.com",
+        //    Password = "BytMig123!",
+        //    IsPersistent = false
+        //};
+
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
         var signInFormData = model.MapTo<SignInFormData>();
 
