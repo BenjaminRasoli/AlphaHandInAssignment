@@ -1,5 +1,6 @@
-﻿using Business.Models;
-using Business.Services;
+﻿using Business.Services;
+using Data.Entities;
+using Domain.Extensions;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +10,17 @@ using WebApp.Models;
 namespace WebApp.Controllers;
 
 [Authorize]
-public class ProjectsController(IStatusService statusService, IClientService clientService, IProjectService projectService) : Controller
+public class ProjectsController(IStatusService statusService, IClientService clientService, IProjectService projectService, IWebHostEnvironment env) : Controller
 {
     private readonly IStatusService _statusService = statusService;
     private readonly IClientService _clientService = clientService;
     private readonly IProjectService _projectService = projectService;
+    private readonly IWebHostEnvironment _env = env;
+
 
     #region List
 
-    [Route("admin/projects")]
+    [Route("/projects")]
     public async Task<IActionResult> Index()
     {
         var clients = await GetClientsSelectListAsync();
@@ -45,21 +48,30 @@ public class ProjectsController(IStatusService statusService, IClientService cli
 
     #region Add
 
-    //[HttpGet]
-    //public async Task<IActionResult> Add()
-    //{
-    //    var vm = new AddProjectViewModel
-    //    {
-    //        Clients = await GetClientsSelectListAsync(),
-    //    };
-    //    return PartialView("~/Views/Shared/Partials/Project/_AddProjectModal.cshtml", vm);
-    //}
 
     [HttpPost]
     public async Task<IActionResult> Add(AddProjectViewModel model)
     {
         if (ModelState.IsValid)
         {
+            string? imagePath = null;
+
+            if (model.Image != null && model.Image.Length > 0)
+            {
+                var uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadFolder);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }
+
+                imagePath = fileName;
+            }
+
             var formData = new AddProjectFormData
             {
                 ClientId = model.ClientId,
@@ -68,7 +80,7 @@ public class ProjectsController(IStatusService statusService, IClientService cli
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 Budget = model.Budget,
-                Image = model.Image
+                Image = imagePath
             };
 
             var result = await _projectService.CreateProjectAsync(formData);
@@ -87,6 +99,7 @@ public class ProjectsController(IStatusService statusService, IClientService cli
         model.Clients = await GetClientsSelectListAsync();
         return PartialView("~/Views/Shared/Partials/Project/_AddProjectModal.cshtml", model);
     }
+
 
 
 

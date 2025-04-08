@@ -35,15 +35,12 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
 
         var projectEntity = formData.MapTo<ProjectEntity>();
 
-        var statusResult = await _statusService.GetStatusByIdAsync(3);
-        projectEntity.StatusId = 3;
-        projectEntity.Status = statusResult!.Result!.MapTo<StatusEntity>();
+        var statusResult = await _statusService.GetStatusByIdAsync(1);
+        projectEntity.StatusId = 1;
 
         var clientResult = await _clientService.GetClientByIdAsync(formData.ClientId);
         projectEntity.ClientId = formData.ClientId;
-        projectEntity.Client = clientResult.Result.MapTo<ClientEntity>();
 
-        projectEntity.Image = "s";
 
         var result = await _projectRepository.AddAsync(projectEntity);
 
@@ -81,12 +78,22 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
             include => include.Client
         );
 
+        if (result.Succeded)
+        {
+            return new ProjectResult<IEnumerable<Project>>
+            {
+                Succeded = true,
+                StatusCode = 200,
+                Result = result.Result
+            };
+        }
         return new ProjectResult<IEnumerable<Project>>
         {
-            Succeded = true,
-            StatusCode = 200,
+            Succeded = false,
+            StatusCode = 500,
             Result = result.Result
         };
+
     }
 
 

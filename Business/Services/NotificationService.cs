@@ -20,8 +20,6 @@ public interface INotificationService
 public class NotificationService(INotificationRepository notificationRepository, INotificationTypeRepository notificationTypeRepository, INotificationTargetRepository notificationTargetRepository, IUserDismissedNotificationRepository userDismissedNotificationRepository) : INotificationService
 {
     private readonly INotificationRepository _notificationRepository = notificationRepository;
-    private readonly INotificationTypeRepository _notificationTypeRepository = notificationTypeRepository;
-    private readonly INotificationTargetRepository _notificationTargetRepository = notificationTargetRepository;
     private readonly IUserDismissedNotificationRepository _userDismissedNotificationRepository = userDismissedNotificationRepository;
 
 
@@ -72,7 +70,7 @@ public class NotificationService(INotificationRepository notificationRepository,
     }
 
 
-    public async Task<NotificationResult<IEnumerable<Notification>>> GetNotificationsAsync(string userId, string? roleName = null, int take = 10)
+    public async Task<NotificationResult<IEnumerable<Notification>>> GetNotificationsAsync(string userId, string? roleName = null, int take = 5)
     {
         var adminTargetName = "Admin";
         var dismissedNotificationResult = await _userDismissedNotificationRepository.GetNotificationsIdsAsync(userId);

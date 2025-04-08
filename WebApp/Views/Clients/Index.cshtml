@@ -15,6 +15,7 @@
     <table class="clients-table">
         <thead>
             <tr>
+                <th>Client Logo</th>
                 <th>Client Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>
@@ -24,7 +25,13 @@
         <tbody>
             @foreach (var client in Model.Clients)
             {
+                    var imagePath = string.IsNullOrEmpty(client.ProfileImage)
+                    ? Url.Content("~/Images/Logo-placeholder.jpg")
+                    : Url.Content($"~/uploads/{client.ProfileImage}");
                 <tr>
+                    <td>
+                        <img class="client-logo" src="@imagePath" alt="@client.ClientName" />
+                    </td>
                     <td>@client.ClientName</td>
                     <td>@client.Email</td>
                     <td>@client.PhoneNumber</td>

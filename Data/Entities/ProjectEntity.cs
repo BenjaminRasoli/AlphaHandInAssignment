@@ -25,10 +25,6 @@ public class ProjectEntity
     public string ClientId { get; set; } = null!;
     public virtual ClientEntity Client { get; set; } = null!;
 
-    //[ForeignKey(nameof(User))]
-    //public string UserId { get; set; } = null!;
-    //public virtual UserEntity User{ get; set; } = null!;
-
     [ForeignKey(nameof(Status))]
     public int StatusId { get; set; }
     public virtual StatusEntity Status{ get; set; } = null!;

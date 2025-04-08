@@ -28,7 +28,6 @@ function initModals() {
         button.addEventListener('click', () => {
             const target = button.getAttribute('data-target')
             const targetElement = document.querySelector(target)
-            console.log('d')
             targetElement.classList.add('show')
         })
     })

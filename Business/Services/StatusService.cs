@@ -20,12 +20,6 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
 
     public async Task<StatusResult<IEnumerable<Status>>> GetStatusesAsync()
     {
-        //var result = await _statusRepository.GetAllAsync<Status>
-        // (
-        //        orderByDescending: false,
-        //        sortByColumn: x => x.Id
-        //);
-
         var result = await _statusRepository.GetAllAsync(
     selector: entity => new Status
     {
@@ -38,7 +32,6 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
 
 
         var entities = result.Result;
-        //var statuses = entities?.Select(entity => entity.MapTo<Status>()) ?? [];
 
         var statuses = entities?.Select(entity => new Status
         {

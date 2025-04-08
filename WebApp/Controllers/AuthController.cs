@@ -33,6 +33,7 @@ public class AuthController(IAuthService authService, IUserService userService, 
             return View(model);
         }
 
+        model.Image = "user-template.svg";
         var signUpFormData = model.MapTo<SignUpFormData>();
         var role = "User";
         var result = await _authService.SignUpAsync(signUpFormData, role);
@@ -59,18 +60,18 @@ public class AuthController(IAuthService authService, IUserService userService, 
         ViewBag.ErrorMessage = null;
         ViewBag.ReturnUrl = returnUrl;
 
-        //model = new SignInViewModel
-        //{
-        //    Email = "admin@domain.com",
-        //    Password = "BytMig123!",
-        //    IsPersistent = false
-        //};
-
-
-        if (!ModelState.IsValid)
+        model = new SignInViewModel
         {
-            return View(model);
-        }
+            Email = "admin@domain.com",
+            Password = "BytMig123!",
+            IsPersistent = false
+        };
+
+
+        //if (!ModelState.IsValid)
+        //{
+        //    return View(model);
+        //}
 
         var signInFormData = model.MapTo<SignInFormData>();
 
@@ -80,7 +81,7 @@ public class AuthController(IAuthService authService, IUserService userService, 
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userResult = await _userService.GetUserByIdAsync(userId!);
-            var user = userResult.Result;
+            var user = userResult.User;
 
             if (user != null)
             {

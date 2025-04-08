@@ -1,4 +1,5 @@
 ﻿using Business.Models;
+using Data.Contexts;
 using Data.Entities;
 using Data.Repositories;
 using Domain.Extensions;
@@ -15,7 +16,9 @@ public interface IUserService
     Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User");
     Task<string> GetDisplayName(string userId);
     Task<UserResult> GetUserByIdAsync(string id);
-    Task<UserResult> GetUsersAsync();
+
+    Task<UserResult<IEnumerable<User>>> GetUsersAsync();
+
 }
 
 public class UserService(IUserRepository userRepository, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : IUserService
@@ -24,10 +27,24 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-    public async Task<UserResult> GetUsersAsync()
+    public async Task<UserResult<IEnumerable<User>>> GetUsersAsync()
     {
-        var result = await _userRepository.GetAllAsync<UserEntity>();
-        return result.MapTo<UserResult>();
+        var repositoryResult = await _userRepository.GetAllAsync<UserEntity>
+            (
+                orderByDescending: false,
+                sortByColumn: x => x.FirstName!
+            );
+
+        var entities = repositoryResult.Result;
+        var users = entities?.Select(entity => entity.MapTo<User>()) ?? [];
+
+
+        return new UserResult<IEnumerable<User>>
+        {
+            Succeded = true,
+            StatusCode = 200,
+            Result = users
+        };
     }
 
     public async Task<UserResult> AddUserToRole(string userId, string roleName)
@@ -79,8 +96,8 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
         var entity = repositoryResult.Result;
         if (entity == null)
-            return new UserResult 
-            { 
+            return new UserResult
+            {
                 Succeded = false,
                 StatusCode = 404,
                 Error = "User not found"
@@ -88,10 +105,10 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
         var user = entity.MapTo<User>();
         return new UserResult
-        { 
+        {
             Succeded = true,
             StatusCode = 200,
-            Result = user
+            User = user
         };
     }
 
@@ -128,7 +145,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
             if (result.Succeeded)
             {
                 var users = await _userRepository.GetAllAsync<UserEntity>();
-                if (users?.Result?.Count() == 1)  
+                if (users?.Result?.Count() == 1)
                 {
                     var addToRoleResult = await AddUserToRole(userEntity.Id, "Admin");
                 }

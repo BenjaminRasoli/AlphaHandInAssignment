@@ -638,7 +638,6 @@ a {
 /* ============================= */
 form {
     width: 100%;
-    color: var(--text-color);
     border-radius: 16px;
 }
 
@@ -669,7 +668,6 @@ form {
         }
 
     form label {
-        color: var(--form-label-color);
         font-size: 1em;
         font-weight: 600;
         font-family: var(--font-standard);
@@ -682,7 +680,6 @@ form {
         font-size: 1em;
         font-weight: 400;
         font-family: var(--font-standard);
-        color: var(--form-input-text-color);
         border: 1px solid var(--form-input-border-color);
         background-color: var(--form-input-background-color);
         transition: border-color 0.1s ease-in-out;
@@ -860,6 +857,7 @@ form {
 /*           Sign Up            */
 /* ============================= */
 #signup {
+    margin-top: 200px;
     width: 600px;
     text-align: center;
 }
@@ -892,6 +890,8 @@ form {
 
 #addProjectModal .card {
     width: 550px;
+    height: 600px;
+    overflow: auto;
 }
 
 #addClientModal .card {
@@ -993,8 +993,6 @@ input:checked + .slider {
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background-color: var(--account-info-background-color);
-    color: var(--account-info-text-color);
     border-radius: 14px;
     margin: 0.5rem;
 }
@@ -1029,13 +1027,11 @@ input:checked + .slider {
     display: block;
     padding: 10px;
     text-decoration: none;
-    color: var(--account-option-text-color);
     margin: 0 0.7rem;
     margin-bottom: 0.5rem;
     font-size: 1em;
     font-family: var(--font-standard);
     font-weight: 600;
-    background-color: var(--account-option-background-color);
     border-radius: 1rem;
     padding: 1rem 0.7rem;
     margin-bottom: 10px;
@@ -1065,12 +1061,7 @@ input:checked + .slider {
         transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     }
 
-        .notification-dropdown-container .btn-notification:hover {
-            background-color: var(--gray-100) !important;
-            border: 0px solid var(--gray-100);
-            color: var(--text-color);
-            transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
-        }
+
 
     .notification-dropdown-container .notification-dropdown {
         position: absolute;
@@ -1159,9 +1150,6 @@ input:checked + .slider {
         pointer-events: none;
     }
 
-    .notification-item:hover {
-        background-color: var(--white-200);
-    }
 
         .notification-item:hover .btn-close {
             opacity: 1;
@@ -1260,4 +1248,55 @@ input:checked + .slider {
         .clients-table td button:hover {
             background-color: var(--btn-hover-background-color);
         }
+
+.client-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+
+/* ============================= */
+/*           User Card           */
+/* ============================= */
+
+
+
+.user-card {
+    width: 250px;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+    text-align: center;
+    margin: 1rem;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.card-avatar img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.card-content h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.user-title {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 5px;
+    margin: 0.5rem 0;
+}
+
+.user-email,
+.user-phone {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+}
 

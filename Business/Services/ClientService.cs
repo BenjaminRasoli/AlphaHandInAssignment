@@ -87,7 +87,9 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         {
             ClientName = form.ClientName,
             Email = form.Email,
-            PhoneNumber = form.PhoneNumber
+            PhoneNumber = form.PhoneNumber,
+            ProfileImage = form.ProfileImage
+            
         });
         if (result.Succeded)
         {

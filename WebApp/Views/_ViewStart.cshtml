@@ -1,12 +1,13 @@
 ﻿@{
     var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? string.Empty;
 
-    if (currentPath.StartsWith("/admin"))
+    if (currentPath.StartsWith("/auth"))
     {
-        Layout = "_Layout";
+        Layout = "_CenterScreen";
+
     }
     else
     {
-        Layout = "_CenterScreen";
+        Layout = "_Layout";
     }
 }

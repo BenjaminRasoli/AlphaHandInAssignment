@@ -18,6 +18,12 @@
                 <input type="hidden" name="returnUrl" value="@ViewBag?.ReturnUrl" />
 
                 <div class="form-group">
+                    <label asp-for="ProfileImage"></label>
+                    <input asp-for="ProfileImage" accept="/*" />
+                </div>
+
+
+                <div class="form-group">
                     <label asp-for="ClientName"></label>
                     <input asp-for="ClientName" value="@Model?.ClientName" />
                     <span asp-validation-for="ClientName" class="text-danger"></span>  

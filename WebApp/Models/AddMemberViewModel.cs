@@ -22,6 +22,10 @@ public class AddMemberviewModel
     [Display(Name = "Email", Prompt = "Enter email address")]
     public string Email { get; set; } = null!;
 
+    [Required(ErrorMessage = "you must select a file.")]
+    [Display(Name = "File upload")]
+    public IFormFile ProfileImage { get; set; } = null!;
+
     //[Required(ErrorMessage = "is required.")]
     //[DataType(DataType.Password)]
     //[Display(Name = "Password", Prompt = "Enter password")]

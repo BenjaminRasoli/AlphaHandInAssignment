@@ -30,7 +30,7 @@
             @foreach (var notification in notifications!)
             {
                 <div class="notification-item" data-id="@notification.Id">
-                    <img class="image" src="@notification.Image" />
+                    <img class="image" src="@Url.Content($"~/uploads/{notification.Image}")" />
                     <div class="message">@notification.Message</div>
                     <div class="time" data-created="@notification.CreateDate.ToString("s")">@notification.CreateDate</div>
                 </div>

@@ -18,5 +18,9 @@ public class AddClientViewModel
     [Display(Name = "Client PhoneNumber", Prompt = "Input Client Phone Number")]
     public string? ClientPhoneNumber { get; set; }
 
+    [Required(ErrorMessage = "you must select a file.")]
+    [Display(Name = "File upload")]
+    public IFormFile ProfileImage { get; set; } = null!;
+
 
 }

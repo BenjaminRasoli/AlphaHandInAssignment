@@ -34,4 +34,6 @@ public class SignUpViewModel
     [Display(Name = "Confirm Password", Prompt = "Confirm password")]
     public string ConfirmPassword { get; set; } = null!;
 
+    public string? Image { get; set; }
+
 }

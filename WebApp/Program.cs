@@ -50,8 +50,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
 
+app.UseStatusCodePagesWithReExecute("/Error404/Error404");
 
-app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/admin/overview"));
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/projects"));
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

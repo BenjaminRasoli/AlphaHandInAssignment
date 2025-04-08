@@ -108,7 +108,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
             };
         }
 
-        var exists = await _table.AnyAsync(findBy);
+        var exists = await _table.AsNoTracking().AnyAsync(findBy);
         return new RepositoryResult<bool>
         {
             Succeded = exists,
@@ -169,7 +169,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
             }
         }
 
-        var entity = await query.FirstOrDefaultAsync(where);
+        var entity = await query.AsNoTracking().FirstOrDefaultAsync(where);
         if (entity == null)
         {
             return new RepositoryResult<TModel>

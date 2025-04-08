@@ -9,7 +9,19 @@
     <div class="section-header">
         <h1>@ViewData["Title"]</h1>
         <button type="button" data-type="modal" data-target="#addMemberModal" class="btn btn-add"><span>Add Member</span></button>
-
     </div>
-</section>
 
+    @foreach (var user in Model.Users)
+    {
+        <div class="user-card">
+            <div class="card-avatar">
+                <img class="client-logo" src="@Url.Content($"~/uploads/{user.Image}")" alt="@user.FirstName" />
+            </div>
+            <div class="card-content">
+                <h2>@user.FirstName @user.LastName</h2>
+                <p class="user-email">@user.Email</p>
+                <p class="user-phone">@user.PhoneNumber</p>
+            </div>
+        </div>
+    }
+</section>
