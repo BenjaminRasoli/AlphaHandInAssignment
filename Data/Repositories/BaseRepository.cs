@@ -146,7 +146,20 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
 
         if (take > 0) query = query.Take(take);
 
-        var entities = await query.Select(selector ?? (x => (TSelect)(object)x)).ToListAsync();
+        if (selector != null)
+        {
+            var selector_entities = await query.Select(selector ?? (x => (TSelect)(object)x)).ToListAsync();
+
+            return new RepositoryResult<IEnumerable<TSelect>>
+            {
+                Succeded = true,
+                StatusCode = 200,
+                Result = selector_entities
+            };
+        }
+
+        var entities = await query.ToListAsync();
+
 
         return new RepositoryResult<IEnumerable<TSelect>>
         {
