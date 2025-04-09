@@ -20,10 +20,10 @@ public class ClientService(IClientRepository clientRepository) : IClientService
 
     public async Task<ClientResult<IEnumerable<Client>>> GetClientsAsync()
     {
-        var result = await _clientRepository.GetAllAsync<ClientEntity>();
-        if (result.Succeded && result.Result != null)
+        var result = await _clientRepository.GetAllAsync();
+        if (result.Succeded)
         {
-            var clients = result.Result.Select(entity => entity.MapTo<Client>()).ToList();
+            var clients = result.Result!.Select(entity => entity.MapTo<Client>()).ToList();
             return new ClientResult<IEnumerable<Client>>
             {
                 Succeded = result.Succeded,
@@ -36,7 +36,6 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         {
             Succeded = result.Succeded,
             StatusCode = result.StatusCode,
-            Result = []
         };
     }
 

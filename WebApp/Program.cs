@@ -1,4 +1,5 @@
 using Business.Services;
+using Data;
 using Data.Contexts;
 using Data.Entities;
 using Data.Repositories;
@@ -42,6 +43,13 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbInitializer.SeedAsync(services); 
+}
+
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseRouting();

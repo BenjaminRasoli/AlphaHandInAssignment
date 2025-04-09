@@ -60,18 +60,11 @@ public class AuthController(IAuthService authService, IUserService userService, 
         ViewBag.ErrorMessage = null;
         ViewBag.ReturnUrl = returnUrl;
 
-        model = new SignInViewModel
+
+        if (!ModelState.IsValid)
         {
-            Email = "admin@domain.com",
-            Password = "BytMig123!",
-            IsPersistent = false
-        };
-
-
-        //if (!ModelState.IsValid)
-        //{
-        //    return View(model);
-        //}
+            return View(model);
+        }
 
         var signInFormData = model.MapTo<SignInFormData>();
 

@@ -65,8 +65,7 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
 
     public async Task<ProjectResult<IEnumerable<Project>>> GetProjectsAsync()
     {
-        var result = await _projectRepository.GetAllAsync<Project>(
-            selector: null,
+        var result = await _projectRepository.GetAllAsync(
             orderByDescending: true,
             sortByColumn: s => s.Created,
             filterBy: null,
@@ -80,18 +79,19 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
 
         if (result.Succeded)
         {
+            var projects = result.Result!.Select(x => x.MapTo<Project>());
+
             return new ProjectResult<IEnumerable<Project>>
             {
                 Succeded = true,
                 StatusCode = 200,
-                Result = result.Result
+                Result = projects
             };
         }
         return new ProjectResult<IEnumerable<Project>>
         {
             Succeded = false,
-            StatusCode = 500,
-            Result = result.Result
+            StatusCode = 500
         };
 
     }

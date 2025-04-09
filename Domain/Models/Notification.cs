@@ -6,4 +6,5 @@ public class Notification
     public DateTime CreateDate { get; set; }
     public string Message { get; set; } = null!;
     public string Image { get; set; } = null!;
+    public int NotificationTypeId { get; set; }
 }

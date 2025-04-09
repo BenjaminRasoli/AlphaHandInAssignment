@@ -29,7 +29,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
     public async Task<UserResult<IEnumerable<User>>> GetUsersAsync()
     {
-        var repositoryResult = await _userRepository.GetAllAsync<UserEntity>
+        var repositoryResult = await _userRepository.GetAllAsync
             (
                 orderByDescending: false,
                 sortByColumn: x => x.FirstName!
@@ -144,7 +144,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
             if (result.Succeeded)
             {
-                var users = await _userRepository.GetAllAsync<UserEntity>();
+                var users = await _userRepository.GetAllAsync();
                 if (users?.Result?.Count() == 1)
                 {
                     var addToRoleResult = await AddUserToRole(userEntity.Id, "Admin");

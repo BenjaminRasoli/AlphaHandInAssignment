@@ -1,6 +1,7 @@
 ﻿@model ProjectsViewModel
 @{
     ViewData["Title"] = "Projects";
+
 }
 
 <partial name="Partials/Project/_AddProjectModal" model="Model.AddProjectViewModel" />
@@ -11,12 +12,35 @@
         <h1>@ViewData["Title"]</h1>
         <button type="button" data-type="modal" data-target="#addProjectModal" class="btn btn-add"><span>Add Project</span></button> 
     </div>
-    @foreach (var project in Model.Projects)
-    {
-        <div>
-           @project.ProjectName
-           @project.Description
+
+    <div class="project-grid">
+        @foreach (var project in Model.Projects)
+        {
+
+
+            <div class="project-card">
+                <div class="project-header">
+                    <img src="@Url.Content($"~/uploads/{project.Image}")" alt="Project Logo" class="project-logo" />
+                    <div>
+                        <h3 class="project-title">@project.ProjectName</h3>
+                    </div>
+                </div>
+
+                <div class="project-description">
+                    @Html.Raw(project.Description)
+                </div>
+                <div class="project-footer">
+                    <div class="deadline">
+                        <i class="fa fa-clock"></i>
+                        <div class="dates">
+                            <div>Start: @project.StartDate?.ToString("dd MMM yyyy")</div>
+                            <div>End: @project.EndDate?.ToString("dd MMM yyyy")</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
         </div>
-    }
 </section>
 

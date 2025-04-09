@@ -1300,3 +1300,63 @@ input:checked + .slider {
     font-size: 0.9rem;
 }
 
+
+
+/* ============================= */
+/*           Project Card        */
+/* ============================= */
+
+
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.project-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+}
+
+.project-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin-right: 1rem;
+}
+
+.project-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.project-company {
+    margin: 0;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+.project-description {
+    margin-top: 1rem;
+    color: #444;
+}
+
+.project-footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+

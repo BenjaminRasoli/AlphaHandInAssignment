@@ -10,11 +10,13 @@ using WebApp.Models;
 namespace WebApp.Controllers;
 
 [Authorize]
-public class ProjectsController(IStatusService statusService, IClientService clientService, IProjectService projectService, IWebHostEnvironment env) : Controller
+public class ProjectsController(IStatusService statusService, IClientService clientService, IProjectService projectService, IWebHostEnvironment env, INotificationService notificationService) : Controller
 {
     private readonly IStatusService _statusService = statusService;
     private readonly IClientService _clientService = clientService;
     private readonly IProjectService _projectService = projectService;
+    private readonly INotificationService _notificationService = notificationService;
+
     private readonly IWebHostEnvironment _env = env;
 
 
@@ -85,7 +87,20 @@ public class ProjectsController(IStatusService statusService, IClientService cli
 
             var result = await _projectService.CreateProjectAsync(formData);
 
-            if (result.Succeded)
+            if (result != null && result.Succeded)
+            {
+                var notificationFormData = new NotificationFormData
+                {
+                    NotificationTypeId = 2,
+                    NotificationTargetId = 2,
+                    Message = $"{formData.ProjectName} project created.",
+                    Image = imagePath
+                };
+
+                await _notificationService.AddNotificationAsync(notificationFormData);
+            }
+
+            if (result!.Succeded)
             {
                 TempData["SuccessMessage"] = "Project created successfully!";
                 return RedirectToAction("Index");

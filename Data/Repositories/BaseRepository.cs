@@ -13,6 +13,7 @@ public interface IBaseRepository<TEntity, TModel> where TEntity : class
     Task<RepositoryResult<bool>> DeleteAsync(TEntity entity);
     Task<RepositoryResult<bool>> ExistsAsync(Expression<Func<TEntity, bool>> findBy);
     Task<RepositoryResult<IEnumerable<TSelect>>> GetAllAsync<TSelect>(Expression<Func<TEntity, TSelect>>? selector = null, bool orderByDescending = false, Expression<Func<TEntity, object>>? sortByColumn = null, Expression<Func<TEntity, bool>>? filterBy = null, Expression<Func<TEntity, object>>? sortBy = null, Expression<Func<TEntity, bool>>? where = null, int take = 0, params Expression<Func<TEntity, object>>[] includes);
+    Task<RepositoryResult<IEnumerable<TEntity>>> GetAllAsync(bool orderByDescending = false, Expression<Func<TEntity, object>>? sortByColumn = null, Expression<Func<TEntity, bool>>? filterBy = null, Expression<Func<TEntity, object>>? sortBy = null, Expression<Func<TEntity, bool>>? where = null, int take = 0, params Expression<Func<TEntity, object>>[] includes);
     Task<RepositoryResult<TModel>> GetAsync(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
     Task<RepositoryResult<bool>> UpdateAsync(TEntity entity);
 }
@@ -117,6 +118,49 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         };
     }
 
+
+    public virtual async Task<RepositoryResult<IEnumerable<TEntity>>> GetAllAsync(
+bool orderByDescending = false,
+Expression<Func<TEntity, object>>? sortByColumn = null,
+Expression<Func<TEntity, bool>>? filterBy = null,
+Expression<Func<TEntity, object>>? sortBy = null,
+Expression<Func<TEntity, bool>>? where = null,
+int take = 0,
+params Expression<Func<TEntity, object>>[] includes)
+    {
+        IQueryable<TEntity> query = _table;
+
+        if (where != null) query = query.Where(where);
+        if (filterBy != null) query = query.Where(filterBy);
+        if (includes != null && includes.Length > 0)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        if (sortByColumn != null)
+            query = orderByDescending ? query.OrderByDescending(sortByColumn) : query.OrderBy(sortByColumn);
+        if (sortBy != null)
+            query = orderByDescending ? query.OrderByDescending(sortBy) : query.OrderBy(sortBy);
+
+        if (take > 0) query = query.Take(take);
+
+
+        var entities = await query.ToListAsync();
+
+
+        return new RepositoryResult<IEnumerable<TEntity>>
+        {
+            Succeded = true,
+            StatusCode = 200,
+            Result = entities
+        };
+    }
+
+
+
     public virtual async Task<RepositoryResult<IEnumerable<TSelect>>> GetAllAsync<TSelect>(
     Expression<Func<TEntity, TSelect>>? selector = null,
     bool orderByDescending = false,
@@ -146,6 +190,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
 
         if (take > 0) query = query.Take(take);
 
+
         if (selector != null)
         {
             var selector_entities = await query.Select(selector ?? (x => (TSelect)(object)x)).ToListAsync();
@@ -164,8 +209,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         return new RepositoryResult<IEnumerable<TSelect>>
         {
             Succeded = true,
-            StatusCode = 200,
-            Result = entities
+            StatusCode = 200
         };
     }
 

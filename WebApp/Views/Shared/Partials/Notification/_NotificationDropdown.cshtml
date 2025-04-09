@@ -5,9 +5,13 @@
 
     var notifications = notificationResult.Result;
 
-    if (roleName != "Admin")
+    if (roleName == "Admin")
     {
-        notifications = notifications!.Where(n => n.Message.Contains("login")).ToList(); 
+        notifications = notifications!.ToList();
+    }
+    else
+    {
+        notifications = notifications!.Where(n => n.NotificationTypeId != 1).ToList();
     }
 }
 
